@@ -5,7 +5,7 @@ Created on Wed Jan  3 20:42:21 2018
 @author: jgratsch
 """
 
-# train the network ##########################################################
+# train the network for AR detection ##########################################
  
 # import the necessary packages
 from keras.preprocessing.image import ImageDataGenerator

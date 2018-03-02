@@ -29,11 +29,11 @@ def test_network(image, model_path):
     model = load_model(model_path)
      
     # classify the input image
-    (BioticStress, AbioticStress) = model.predict(image)[0]
+    (NoAR15, AR15) = model.predict(image)[0]
     
     # build the label
-    label = "Abiotic Stress" if AbioticStress > BioticStress else "Biotic Stress"
-    proba = AbioticStress if AbioticStress > BioticStress else BioticStress
+    label = "AR-15" if AR15 > NoAR15 else "No AR-15"
+    proba = AR15 if AR15 > NoAR15 else NoAR15
     label = "{}: {:.2f}%".format(label, proba * 100)
      
     # draw the label on the image

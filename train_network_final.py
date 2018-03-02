@@ -28,8 +28,8 @@ import matplotlib
 
 # initialize variables
 dataset = 'images'
-model_path = 'AbioBioModel_upsample_dropout.h5'
-plot = 'Accuracy_plot_upsample_dropout'
+model_path = 'ARIdentification.h5'
+plot = 'Accuracy_plot'
 
 # initialize the data and labels
 print("Running: loading images")
@@ -52,31 +52,31 @@ for imagePath in imagePaths:
     # extract the class label from the image path and update the
     # labels list
     label = imagePath.split(os.path.sep)[-2]
-    label = 1 if label == "AbioticStress" else 0
+    label = 1 if label == "AR-15" else 0
     labels.append(label)
 
 # scale the raw pixel intensities to the range [0, 1]
 data = np.array(data, dtype="float") / 255.0
 labels = np.array(labels)
 
-# upsample minority class to resolve class imbalance problem ##################
-majority = np.reshape(np.where(labels == 0),(1720,))
-minority = np.reshape(np.where(labels == 1),(446,))
-
-abioticData = data[minority]
-bioticData = data[majority]
-
-abioticData_resample = resample(abioticData,
-                                replace = True,
-                                n_samples = 1720,
-                                random_state = 123)
-
-data_resampled = np.concatenate([abioticData_resample, bioticData], axis = 0)
-
-label_1 = np.full((1720,), 1)
-label_0 = np.full((1720,), 0)
-
-labels_resampled = np.concatenate([label_1, label_0], axis = 0)
+## upsample minority class to resolve class imbalance problem ##################
+#majority = np.reshape(np.where(labels == 0),(1720,))
+#minority = np.reshape(np.where(labels == 1),(446,))
+#
+#abioticData = data[minority]
+#bioticData = data[majority]
+#
+#abioticData_resample = resample(abioticData,
+#                                replace = True,
+#                                n_samples = 1720,
+#                                random_state = 123)
+#
+#data_resampled = np.concatenate([abioticData_resample, bioticData], axis = 0)
+#
+#label_1 = np.full((1720,), 1)
+#label_0 = np.full((1720,), 0)
+#
+#labels_resampled = np.concatenate([label_1, label_0], axis = 0)
 
 ###############################################################################
 
@@ -91,8 +91,8 @@ def train(model_path, plot):
      
     # partition the data into training and testing splits using 75% of
     # the data for training and the remaining 25% for testing
-    (trainX, testX, trainY, testY) = train_test_split(data_resampled,
-    	labels_resampled, test_size=0.25, random_state=42)
+    (trainX, testX, trainY, testY) = train_test_split(data,
+    	labels, test_size=0.25, random_state=42)
      
     # convert the labels from integers to vectors
     trainY = to_categorical(trainY, num_classes=2)
@@ -151,8 +151,8 @@ confusion_matrix(y_true['class'],y_pred['class'])
 
 # cross validation ############################################################
 from sklearn.model_selection import StratifiedKFold
-X = data_resampled
-Y = labels_resampled
+X = data
+Y = labels
 seed = 7
 np.random.seed(seed)
 kfold = StratifiedKFold(n_splits = 10, shuffle = True, random_state = seed)
